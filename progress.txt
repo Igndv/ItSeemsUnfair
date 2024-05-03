@@ -1,0 +1,19 @@
+Game : It Seems Unfair..?
+
+Progress : 
+
+UML class - 2/5/2024
+Notes : uml buat class awal2nya aja
+Program  sampe child player
+Note : perlu debug masalah count[] cara ngosongin ato ngisi array (last solution pke tambahan playerCount = 4)
+Riset
+-. Pixel character = 16x16
+-. Widescreen 400x224 / standart 256x224 (coba aja nanti)
+-. Cari sprite dan bg di 
+
+
+TODO : 
+Make github connect di repo Pindahfile buat connect in pc ke laptop
+Debug
+Slesain class lah minimal
+Belajar input texture (synthax : texture2D)
