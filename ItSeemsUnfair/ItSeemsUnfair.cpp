@@ -3,59 +3,54 @@
 
 #include <iostream>
 #include "raylib.h"
+
 using namespace std;
 
-class Character {
-protected:
-	int health;
-	int damage;
-public:
-	bool turn;
-	int count[];
+void diceBattle() { //battle dice tapi belum dgn kbhit space, +interaction when win dice
+	int dice1, dice2;
+	bool roundWinner;
 
-	Character() {
+	cout << "Press space to roll dice!" << endl;
+	dice1 = rand() % 7;
+	dice2 = rand() % 7;
+
+	if (dice1 > dice2) {
+		cout << "Your Chance to attack!" << endl;
+		roundWinner = 1;
+
 	}
+	else if (dice1 < dice2) {
+		cout << "Enemy's Chance to attack!" << endl;
+		roundWinner = 0;
 
-	void displayInfo() {
-		//display health + turn
 	}
-
-	void turnLogic() {
-		//turn logic where the player and enemy takes turn on rolling the dice
+	else if (dice1 == dice2) {
+		diceBattle();
 	}
-};
+}
 
-class Player : Character {
-private:
-	int playerCount = 4;
-public:
-	Player(int getHealth, int getDamage, bool getTurn, int getCount) {
-		health = getHealth;
-		damage = getDamage;
-		turn = getTurn;
-		count[playerCount] = getCount;
+void battle() {
+	int playerCount, enemyCount, playerIndex, enemyIndex;
+	bool turn_check = 0, player_check = 0, enemy_check = 0;
+
+	playerCount = 1;//player and enemy count masih misal untuk test aja
+	enemyCount = 2;
+
+	while (player_check != 0 || enemy_check != 0) {	//selama check player / enemy belum mati jalan tros.. +dice battle interaction belum
+		for (playerIndex = 1; playerIndex <= playerCount; playerIndex++) {
+
+			for (enemyIndex = 1; enemyIndex <= enemyCount; enemyIndex++) {
+				diceBattle();
+			}
+
+		}
 	}
-
-	int playerStats(int getHealth, int getDamage, int getTurn) {
-		// gatau mau void ato int nanti bs print health player, damage, turn
-	}
-
-	void playerTurn() {
-		// players turn gatau pake ga ya?
-	}
-
-
-
-};
-
-
-
-
-
+}
 
 int main()
-{
-   cout << "Hello World!\n";
+{ 
+	cout << "Hello World";
+		return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
