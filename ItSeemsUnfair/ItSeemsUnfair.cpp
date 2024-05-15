@@ -11,19 +11,66 @@ using namespace std;
 //assign class
 class stats {
 protected:
-	int HP, damage;
+	int level,HP, attack;
 
+public: // jan lupa bikin modul buat modify main stats : level,HP,attack
+
+	stats() { //constructor
+		level = 0;
+		HP = 0;
+		attack = 0;
+	}
+};
+
+class playerStats : stats {
 public:
-	
+	int playerIndex;
+
+	playerStats() { //constuctor
+		level = 0;
+		HP = 0;
+		attack = 0;
+		playerIndex = 0;
+	}
+
+	void mainPlayerStats() {
+		level = 60;
+		HP = 40;
+		attack = 15;
+		playerIndex = 1;
+	}
+
+	void magePlayerStats() {
+		level = 55;
+		HP = 30;
+		attack = 25;
+		playerIndex = 2;
+	}
 };
 
-class animation {
+class enemyStats : stats {
+	int enemyIndex;
+
+	enemyStats(int _HP, int _attack, int _enemyIndex) {
+		HP = _HP;
+		attack = _attack;
+		enemyIndex = _enemyIndex;
+	}
 
 };
 
-class interaction {
+class Battle { //dicebattle dll nti masuk sini semua
 
 };
+
+class interaction : Battle{ //battle child
+
+};
+
+class animation { //draw model taru sini semua
+
+};
+
 
 //func sementara
 
@@ -59,7 +106,8 @@ void diceBattle() { //battle dice tapi belum dgn kbhit space, +interaction when 
 	}
 }
 
-void interaction() {
+void interaction() { //inside battle class
+	int attack, heal;
 
 }
 
