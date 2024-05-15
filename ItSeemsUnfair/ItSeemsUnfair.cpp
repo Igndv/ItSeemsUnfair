@@ -71,7 +71,6 @@ class animation { //draw model taru sini semua
 
 };
 
-
 //func sementara
 
 void diceBattle() { //battle dice tapi belum dgn kbhit space, +interaction when win dice
@@ -105,6 +104,7 @@ void diceBattle() { //battle dice tapi belum dgn kbhit space, +interaction when 
 		diceBattle();
 	}
 }
+
 
 void interaction() { //inside battle class
 	int attack, heal;
