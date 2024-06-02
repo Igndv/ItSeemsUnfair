@@ -12,8 +12,9 @@ using namespace std;
 class core {
 protected:
 	 string name;
-	 int level,HP, attack,heal,playerIndex,enemyIndex,newHP;
+	int level,HP, attack,heal,playerIndex,enemyIndex;
 	int damageConflict, healConflict;
+	int newHP;
 
 public: // jan lupa bikin modul buat modify main core : level,HP,attack
 
@@ -21,7 +22,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 	}
 
 	//player stats
-	 void mainPlayerStats() { //stats awal player 1
+	void mainPlayerStats() { //stats awal player 1
 		name = "Ralph";
 		level = 60;
 		HP = 40;
@@ -30,7 +31,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		playerIndex = 1;
 	}
 
-	 void magePlayerStats() { //stats awal player 2
+	void magePlayerStats() { //stats awal player 2
 		name = "Aurora";
 		level = 55;
 		HP = 30;
@@ -185,14 +186,12 @@ public:
 	void singleAttack() {
 		this->getDamage();
 		newHP = HP - damageConflict;
-		this->updateHP();
 		cout << "Single Attack was Initialized! (" << attack << ")" << endl; //harusnya aman si
 	}
 
 	void wideAttack() {
 		this->getDamage();
 		HP = HP - (damageConflict / 3);
-		this->updateHP();
 		cout << "Wide Attack was Initialized! (" << attack << ")" << endl; //belum atur
 	}
 
@@ -205,7 +204,6 @@ public:
 	void heal() {
 		this->getHeal();
 		newHP = HP + healConflict;
-		this->updateHP();
 		cout << "Heal was Initialized!" << endl; 
 
 	}
