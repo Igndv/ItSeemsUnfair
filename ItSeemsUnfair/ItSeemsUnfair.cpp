@@ -11,16 +11,17 @@ using namespace std;
 //assign class
 class core {
 protected:
-	string name;
-	int level,HP, attack,heal,playerIndex,enemyIndex;
+	 string name;
+	 int level,HP, attack,heal,playerIndex,enemyIndex,newHP;
 	int damageConflict, healConflict;
 
 public: // jan lupa bikin modul buat modify main core : level,HP,attack
 
 	core() { 
 	}
+
 	//player stats
-	void mainPlayerStats() { //stats awal player 1
+	 void mainPlayerStats() { //stats awal player 1
 		name = "Ralph";
 		level = 60;
 		HP = 40;
@@ -29,7 +30,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		playerIndex = 1;
 	}
 
-	void magePlayerStats() { //stats awal player 2
+	 void magePlayerStats() { //stats awal player 2
 		name = "Aurora";
 		level = 55;
 		HP = 30;
@@ -41,8 +42,8 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 
 
 	//enemy stats : semua stats monster yang berbeda2
-	void enemySkeleton() {
-		name = "Skeleton";
+	 void enemySkeleton() {
+		name = "Skeleton1";
 		level = 5;
 		HP = 15;
 		attack = 5;
@@ -50,8 +51,8 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		enemyIndex = 0;
 	}
 
-	void enemyZombie() {
-		name = "Zombie";
+	 void enemyZombie() {
+		name = "Zombie3";
 		level = 7;
 		HP = 25;
 		attack = 7;
@@ -59,37 +60,70 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		enemyIndex = 0;
 	}
 
+	 void enemySlime() {
+		name = "Slime2";
+		level = 3;
+		HP = 5;
+		attack = 5;
+		heal = 0;
+		enemyIndex = 0;
+	}
+
+	 void enemyDragon() {
+		name = "Dragon4";
+		level = 15;
+		HP = 35;
+		attack = 15;
+		heal = 0;
+		enemyIndex = 0;
+	}
 	//enemy stats end
 
+
+	//Set Player 1,2
+	 void player1() {
+		 mainPlayerStats();
+	}
+
+	 void player2() {
+		magePlayerStats();
+	}
+	//Set Player 1,2 end 
+	
+
 	//Set enemy 1,2,3,4
-	void enemy1() {
-
+	 void enemy1() {
+		enemySkeleton();
+		enemyIndex = 1;
 	}
 
-	void enemy2() {
-
+	 void enemy2() {
+		enemySlime();
+		enemyIndex = 2;
 	}
 
-	void enemy3() {
-
+	 void enemy3() {
+		enemyZombie();
+		enemyIndex = 3;
 	}
 
-	void enemy4() {
-
+	 void enemy4() {
+		enemyZombie();
+		enemyIndex = 4;
 	}
 
 	//Player Juggle Stats
-	void playerStatsJuggle() {
+	 void playerStatsJuggle() {
 		if (playerIndex == 1) {
-			this->mainPlayerStats();
+			player1();
 		}
 		else if (playerIndex == 2) {
-			this->magePlayerStats();
+			player2();
 		}
 	}
 
 	//Enemy Juggle Stats (max enemy 4)
-	void enemyStatsJuggle() {
+	 void enemyStatsJuggle() {
 
 		if (enemyIndex == 1) {
 			this->enemy1();
@@ -103,7 +137,6 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		else if (enemyIndex == 4) {
 			this->enemy4();
 		}
-
 	}
 
 	//Get Interaction
@@ -115,8 +148,16 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		healConflict = heal;
 	}
 
-	void checkStats() { //cek statistik
+	void updateHP() {
+		HP = newHP;
+	}
+
+	void checkPlayerStats() { //cek statistik
 		cout << name << "'s Level = " << level << endl << "HP = " << HP << endl << "Attack = " << attack << endl << playerIndex << endl;
+	}
+
+	void checkEnemyStats() { //cek statistik
+		cout << name << "'s Level = " << level << endl << "HP = " << HP << endl << "Attack = " << attack << endl << enemyIndex << endl;
 	}
 };
 
@@ -143,12 +184,16 @@ public:
 
 	void singleAttack() {
 		this->getDamage();
-		HP = HP - damageConflict;
-		cout << "Single Attack was Initialized!" << endl; //harusnya aman si
+		newHP = HP - damageConflict;
+		this->updateHP();
+		cout << "Single Attack was Initialized! (" << attack << ")" << endl; //harusnya aman si
 	}
 
 	void wideAttack() {
-		cout << "Wide Attack was Initialized!" << endl; //belum atur
+		this->getDamage();
+		HP = HP - (damageConflict / 3);
+		this->updateHP();
+		cout << "Wide Attack was Initialized! (" << attack << ")" << endl; //belum atur
 	}
 
 
@@ -159,15 +204,16 @@ public:
 
 	void heal() {
 		this->getHeal();
-		HP = HP + healConflict;
+		newHP = HP + healConflict;
+		this->updateHP();
 		cout << "Heal was Initialized!" << endl; 
 
 	}
 
 	void interactionMenu() { //Menu interaksi, sementara pake cout (belum dibedain buat player 1 dan 2)
 		char ch;
-
-		cout << name << "Player wants to :" << endl << "1. Single Attack" << endl << "2.Wide Attack" << endl << "3.Block" << endl<<"4.Heal" << endl;
+		this->playerStatsJuggle();
+		cout << name << "Player wants to :" << endl << "1. Single Attack" << endl << "2. Wide Attack" << endl << "3. Block" << endl<<"4. Heal" << endl;
 
 		ch = _getch();
 		if (ch == '1') {
@@ -185,6 +231,13 @@ public:
 		else {
 			this->interactionMenu();
 		}
+
+	}
+
+	void enemyLogic() { //enemy baru cuman bisa attack
+		this->enemyStatsJuggle();
+		cout << name << " wants to Attack (-" << attack << ")" << endl;
+		this->singleAttack();
 
 	}
 
@@ -219,6 +272,7 @@ public:
 				cout << "Your Roll : " << dice1 << " | Your Enemy Roll : " << dice2 << endl << "Enemy's Chance to attack!" << endl;
 				roundWinner = 0;
 				cout << roundWinner << endl;
+				this->enemyLogic();
 				cout << "------------------------------------------" << endl;
 				cout << endl;
 
@@ -247,11 +301,16 @@ public:
 		while (playerIsAlive == 1 || enemyIsAlive == 1) {	//selama check player / enemy belum mati jalan tros.. +dice battle interaction belum
 			for (playerIndex = 1; playerIndex <= playerCount; playerIndex++)
 				for (enemyIndex = 1; enemyIndex <= enemyCount; enemyIndex++) {
-					this->playerStatsJuggle();
-					this->enemyStatsJuggle();
+					//player
 					cout << "Player Index = " << playerIndex << " is attacking " << enemyIndex << endl;
+					this->playerStatsJuggle();
 					cout << "Test Player = ";
-					checkStats();
+					checkPlayerStats();
+					cout << endl;
+					//enemy
+					this->enemyStatsJuggle();
+					cout << "Test Enemy = ";
+					checkEnemyStats();
 					cout << endl;
 					this->diceBattle();
 				}
@@ -270,18 +329,18 @@ int main()
 	//Set main player and mage stats
 	playerStats KnightPlayer;
 	KnightPlayer.mainPlayerStats();
-	KnightPlayer.checkStats(); cout << endl;
+	KnightPlayer.checkPlayerStats(); cout << endl;
 
 	playerStats MagePlayer;
 	MagePlayer.magePlayerStats();
-	MagePlayer.checkStats(); cout << endl;
+	MagePlayer.checkPlayerStats(); cout << endl;
 
 	//Enemy Stats trial
 	enemyStats enemy1();
 	enemyStats ememy2();
 
 
-	cout << "Hello World" << endl << endl;
+	cout << "-------------------------------" << endl << endl;
 
 	Battle StartBattle;
 	StartBattle.battle(3); //insert jumlah musuh
