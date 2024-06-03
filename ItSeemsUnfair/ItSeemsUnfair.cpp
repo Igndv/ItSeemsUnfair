@@ -11,14 +11,14 @@ using namespace std;
 //assign class
 class core {
 protected:
-	 string name;
-	int level,HP, attack,heal,playerIndex,enemyIndex;
+	string name;
+	int level, HP, attack, heal, playerIndex, enemyIndex;
 	int damageConflict, healConflict;
 	int newHP;
 
 public: // jan lupa bikin modul buat modify main core : level,HP,attack
 
-	core() { 
+	core() {
 	}
 
 	//player stats
@@ -43,7 +43,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 
 
 	//enemy stats : semua stats monster yang berbeda2
-	 void enemySkeleton() {
+	void enemySkeleton() {
 		name = "Skeleton1";
 		level = 5;
 		HP = 15;
@@ -52,7 +52,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		enemyIndex = 0;
 	}
 
-	 void enemyZombie() {
+	void enemyZombie() {
 		name = "Zombie3";
 		level = 7;
 		HP = 25;
@@ -61,7 +61,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		enemyIndex = 0;
 	}
 
-	 void enemySlime() {
+	void enemySlime() {
 		name = "Slime2";
 		level = 3;
 		HP = 5;
@@ -70,7 +70,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		enemyIndex = 0;
 	}
 
-	 void enemyDragon() {
+	void enemyDragon() {
 		name = "Dragon4";
 		level = 15;
 		HP = 35;
@@ -82,39 +82,39 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 
 
 	//Set Player 1,2
-	 void player1() {
-		 mainPlayerStats();
+	void player1() {
+		mainPlayerStats();
 	}
 
-	 void player2() {
+	void player2() {
 		magePlayerStats();
 	}
 	//Set Player 1,2 end 
-	
+
 
 	//Set enemy 1,2,3,4
-	 void enemy1() {
+	void enemy1() {
 		enemySkeleton();
 		enemyIndex = 1;
 	}
 
-	 void enemy2() {
+	void enemy2() {
 		enemySlime();
 		enemyIndex = 2;
 	}
 
-	 void enemy3() {
+	void enemy3() {
 		enemyZombie();
 		enemyIndex = 3;
 	}
 
-	 void enemy4() {
-		enemyZombie();
+	void enemy4() {
+		enemyDragon();
 		enemyIndex = 4;
 	}
 
 	//Player Juggle Stats
-	 void playerStatsJuggle() {
+	void playerStatsJuggle() {
 		if (playerIndex == 1) {
 			player1();
 		}
@@ -124,7 +124,7 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 	}
 
 	//Enemy Juggle Stats (max enemy 4)
-	 void enemyStatsJuggle() {
+	void enemyStatsJuggle() {
 
 		if (enemyIndex == 1) {
 			this->enemy1();
@@ -149,8 +149,8 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 		healConflict = heal;
 	}
 
-	void updateHP() {
-		HP = newHP;
+	void setHp(int newHp) {
+		HP = newHp;
 	}
 
 	void checkPlayerStats() { //cek statistik
@@ -165,15 +165,31 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 class playerStats : public core {
 public:
 
-	playerStats() { //default constuctor
+	playerStats(string _nama, int _level, int _HP, int _attack, int _heal, int _playerIndex) { // built constuctor with Level, HP, Atack, Heal, playerIndex
+		name = _nama;
+		level = _level;
+		HP = _HP;
+		attack = _attack;
+		heal = _heal;
+		playerIndex = _playerIndex;
 	}
+
+
 };
 
 class enemyStats : public core { //create statistik musuh
 public:
 
-	enemyStats() { //constructor with (HP,attack,enemyIndex)
+	enemyStats(string _name, int _level, int _HP, int _attack, int _heal, int _enemyIndex) { //built constructor with Level, HP, Attack, Heal, enemyIndex
+		name = _name;
+		level = _level;
+		HP = _HP;
+		attack = _attack;
+		heal = _heal;
+		enemyIndex = _enemyIndex;
 	}
+
+
 };
 
 class Battle : public core { //dicebattle dll nti masuk sini semua
@@ -204,14 +220,14 @@ public:
 	void heal() {
 		this->getHeal();
 		newHP = HP + healConflict;
-		cout << "Heal was Initialized!" << endl; 
+		cout << "Heal was Initialized!" << endl;
 
 	}
 
 	void interactionMenu() { //Menu interaksi, sementara pake cout (belum dibedain buat player 1 dan 2)
 		char ch;
 		this->playerStatsJuggle();
-		cout << name << "Player wants to :" << endl << "1. Single Attack" << endl << "2. Wide Attack" << endl << "3. Block" << endl<<"4. Heal" << endl;
+		cout << name << "Player wants to :" << endl << "1. Single Attack" << endl << "2. Wide Attack" << endl << "3. Block" << endl << "4. Heal" << endl;
 
 		ch = _getch();
 		if (ch == '1') {
@@ -325,24 +341,29 @@ int main()
 {
 
 	//Set main player and mage stats
-	playerStats KnightPlayer;
-	KnightPlayer.mainPlayerStats();
-	KnightPlayer.checkPlayerStats(); cout << endl;
+	playerStats MainPlayer("Ralph", 60, 40, 15, 0, 1);
+	MainPlayer.checkPlayerStats(); cout << endl;
 
-	playerStats MagePlayer;
-	MagePlayer.magePlayerStats();
+	playerStats MagePlayer("Aurora", 55, 30, 25, 15, 2);
 	MagePlayer.checkPlayerStats(); cout << endl;
 
 	//Enemy Stats trial
-	enemyStats enemy1();
-	enemyStats ememy2();
+	enemyStats Skeleton("Skeleton 1", 5, 15, 5, 0, 0);
+	Skeleton.checkEnemyStats(); cout << endl;
+	enemyStats Slime("Slime 2", 3, 5, 5, 0, 0);
+	Slime.checkEnemyStats(); cout << endl;
+	enemyStats Zombie("Zombie 3", 7, 25, 7, 0, 0);
+	Zombie.checkEnemyStats(); cout << endl;
+	enemyStats Dragon("Dragon 4", 15, 35, 15, 0, 0);
+	Dragon.checkEnemyStats(); cout << endl;
+
 
 
 	cout << "-------------------------------" << endl << endl;
 
-	Battle StartBattle;
-	StartBattle.battle(3); //insert jumlah musuh
-		return 0;
+	//Battle StartBattle;
+	//StartBattle.battle(4); //insert jumlah musuh
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
