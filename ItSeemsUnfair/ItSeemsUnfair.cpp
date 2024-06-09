@@ -12,8 +12,7 @@ using namespace std;
 class core {
 protected:
 	string name;
-	int level, HP, attack, heal, playerIndex, enemyIndex;
-	int damageConflict, healConflict;
+	int level, HP, attack, heal;
 	int newHP;
 
 public: // jan lupa bikin modul buat modify main core : level,HP,attack
@@ -21,249 +20,146 @@ public: // jan lupa bikin modul buat modify main core : level,HP,attack
 	core() {
 	}
 
-	//player stats
-	void mainPlayerStats() { //stats awal player 1
-		name = "Ralph";
-		level = 60;
-		HP = 40;
-		attack = 15;
-		heal = 0;
-		playerIndex = 1;
+	//Get info
+	int getDamage() const{
+		return attack;
 	}
 
-	void magePlayerStats() { //stats awal player 2
-		name = "Aurora";
-		level = 55;
-		HP = 30;
-		attack = 25;
-		heal = 15;
-		playerIndex = 2;
-	}
-	//player stats end
-
-
-	//enemy stats : semua stats monster yang berbeda2
-	void enemySkeleton() {
-		name = "Skeleton1";
-		level = 5;
-		HP = 15;
-		attack = 5;
-		heal = 0;
-		enemyIndex = 0;
+	int getHeal() const{
+		return heal;
 	}
 
-	void enemyZombie() {
-		name = "Zombie3";
-		level = 7;
-		HP = 25;
-		attack = 7;
-		heal = 0;
-		enemyIndex = 0;
+	int getHP() const{
+		return HP;
 	}
 
-	void enemySlime() {
-		name = "Slime2";
-		level = 3;
-		HP = 5;
-		attack = 5;
-		heal = 0;
-		enemyIndex = 0;
-	}
-
-	void enemyDragon() {
-		name = "Dragon4";
-		level = 15;
-		HP = 35;
-		attack = 15;
-		heal = 0;
-		enemyIndex = 0;
-	}
-	//enemy stats end
-
-
-	//Set Player 1,2
-	void player1() {
-		mainPlayerStats();
-	}
-
-	void player2() {
-		magePlayerStats();
-	}
-	//Set Player 1,2 end 
-
-
-	//Set enemy 1,2,3,4
-	void enemy1() {
-		enemySkeleton();
-		enemyIndex = 1;
-	}
-
-	void enemy2() {
-		enemySlime();
-		enemyIndex = 2;
-	}
-
-	void enemy3() {
-		enemyZombie();
-		enemyIndex = 3;
-	}
-
-	void enemy4() {
-		enemyDragon();
-		enemyIndex = 4;
-	}
-
-	//Player Juggle Stats
-	void playerStatsJuggle() {
-		if (playerIndex == 1) {
-			player1();
-		}
-		else if (playerIndex == 2) {
-			player2();
-		}
-	}
-
-	//Enemy Juggle Stats (max enemy 4)
-	void enemyStatsJuggle() {
-
-		if (enemyIndex == 1) {
-			this->enemy1();
-		}
-		else if (enemyIndex == 2) {
-			this->enemy2();
-		}
-		else if (enemyIndex == 3) {
-			this->enemy3();
-		}
-		else if (enemyIndex == 4) {
-			this->enemy4();
-		}
-	}
-
-	//Get Interaction
-	void getDamage() {
-		damageConflict = attack;
-	}
-
-	void getHeal() {
-		healConflict = heal;
+	string getName() const {
+		return name;
 	}
 
 	void setHp(int newHp) {
 		HP = newHp;
 	}
 
-	void checkPlayerStats() { //cek statistik
-		cout << name << "'s Level = " << level << endl << "HP = " << HP << endl << "Attack = " << attack << endl << playerIndex << endl;
-	}
-
-	void checkEnemyStats() { //cek statistik
-		cout << name << "'s Level = " << level << endl << "HP = " << HP << endl << "Attack = " << attack << endl << enemyIndex << endl;
+	void checkStats() { //cek statistik
+		cout << name << "'s Level = " << level << endl << "HP = " << HP << endl << "Attack = " << attack << endl;
 	}
 };
 
 class playerStats : public core {
 public:
 
-	playerStats(string _nama, int _level, int _HP, int _attack, int _heal, int _playerIndex) { // built constuctor with Level, HP, Atack, Heal, playerIndex
+	playerStats(string _nama, int _level, int _HP, int _attack, int _heal) { // built constuctor with Level, HP, Atack, Heal, playerIndex
 		name = _nama;
 		level = _level;
 		HP = _HP;
 		attack = _attack;
 		heal = _heal;
-		playerIndex = _playerIndex;
 	}
-
-
 };
 
 class enemyStats : public core { //create statistik musuh
 public:
 
-	enemyStats(string _name, int _level, int _HP, int _attack, int _heal, int _enemyIndex) { //built constructor with Level, HP, Attack, Heal, enemyIndex
+	enemyStats(string _name, int _level, int _HP, int _attack, int _heal) { //built constructor with Level, HP, Attack, Heal, enemyIndex
 		name = _name;
 		level = _level;
 		HP = _HP;
 		attack = _attack;
 		heal = _heal;
-		enemyIndex = _enemyIndex;
 	}
-
-
 };
 
 class Battle : public core { //dicebattle dll nti masuk sini semua
 private:
 	bool roundWinner;
-	int playerHP, playerAttack, enemyHP, enemyAttack;
+	string rarity;
 
 public:
 
-	void singleAttack() {
-		this->getDamage();
-		newHP = HP - damageConflict;
-		cout << "Single Attack was Initialized! (" << attack << ")" << endl; //harusnya aman si
+	//slash
+	void slash_Player(playerStats& player,enemyStats& enemy) { //slash from enemy to player <-> player to enemy
+		int damage;
+		damage = player.getDamage();
+		cout << damage;
+		this->getSlash_Enemy(enemy, damage);
 	}
 
-	void wideAttack() {
-		this->getDamage();
-		HP = HP - (damageConflict / 3);
-		cout << "Wide Attack was Initialized! (" << attack << ")" << endl; //belum atur
+	void slash_Enemy(playerStats& player,enemyStats& enemy) {
+		int damage;
+		damage = enemy.getDamage();
+		cout << damage;
+		this->getSlash_Player(player, damage);
 	}
 
+	void getSlash_Player(playerStats& player,int slash) { //update health from damage recieved from enemy - parameter damage from enemy
+		int health = player.getHP();
+		health = health - slash;
+		this->setHp(health);
+	}
 
-	void block() {
-		cout << "Block was Initialized!" << endl; //belum atur
+	void getSlash_Enemy(enemyStats& enemy, int slash) { //update health from damage recieved from enemy - parameter damage from enemy
+		int health = enemy.getHP();
+		health = health - slash;
+		this->setHp(health);
+	}
 
+	void slashAttack(playerStats& player, enemyStats& enemy) {
+		this->slash_Player(player,enemy);
+		cout << "Slash was Initialized! (" << attack << ")" << endl;
+	}
+	//slash end
+
+	// heal
+
+	void getHeal_Player(playerStats& player, enemyStats& enemy) {
+		int healing;
 	}
 
 	void heal() {
 		this->getHeal();
-		newHP = HP + healConflict;
 		cout << "Heal was Initialized!" << endl;
 
 	}
 
-	void interactionMenu() { //Menu interaksi, sementara pake cout (belum dibedain buat player 1 dan 2)
+	//heal end
+
+	//item
+	void itemPick() {
+		this->getDamage();
+		cout << "Wide Attack was Initialized! (" << attack << ")" << endl;
+	}
+
+	//item end
+
+	void interactionMenu(playerStats& player,enemyStats& enemy) { //Menu interaksi, sementara pake cout (belum dibedain buat player 1 dan 2)
 		char ch;
-		this->playerStatsJuggle();
 		cout << name << "Player wants to :" << endl << "1. Single Attack" << endl << "2. Wide Attack" << endl << "3. Block" << endl << "4. Heal" << endl;
 
 		ch = _getch();
 		if (ch == '1') {
-			this->singleAttack();
+			this->slash_Player(player,enemy);
 		}
 		else if (ch == '2') {
-			this->wideAttack();
-		}
-		else if (ch == '3') {
-			this->block();
-		}
-		else if (ch == '4') {
 			this->heal();
 		}
+		else if (ch == '3') {
+			this->itemPick();
+		}
 		else {
-			this->interactionMenu();
+			this->interactionMenu(player,enemy);
 		}
 
 	}
 
-	void enemyLogic() { //enemy baru cuman bisa attack
-		this->enemyStatsJuggle();
-		cout << name << " wants to Attack (-" << attack << ")" << endl;
-		this->singleAttack();
+	void enemyLogic(playerStats& player, enemyStats& enemy) { //enemy baru cuman bisa attack
+		cout << enemy.getName() << " wants to Attack (-" << enemy.getDamage() << ")" << endl;
+		slash_Enemy(player,enemy);
 
 	}
 
-	void interaciton() { //Fungsi buat ngluarin interaksi
-		char ch;
 
-		if (roundWinner == 1) {
-			this->interactionMenu();
-		}
-	}
-
-	void diceBattle() { //+interaction when win dice
+	void diceBattle(playerStats& player, enemyStats& enemy) { //+interaction when win dice
 		int dice1, dice2;
 		char ch;
 		srand(time(0));
@@ -276,17 +172,15 @@ public:
 
 			if (dice1 > dice2) {
 				cout << "Your Roll : " << dice1 << " | Your Enemy Roll : " << dice2 << endl << "Your Chance to attack!" << endl;
-				roundWinner = 1;
 				cout << roundWinner << endl;
-				this->interaciton();
+				interactionMenu(player,enemy);
 				cout << "------------------------------------------" << endl;
 				cout << endl;
 			}
 			else if (dice1 < dice2) {
 				cout << "Your Roll : " << dice1 << " | Your Enemy Roll : " << dice2 << endl << "Enemy's Chance to attack!" << endl;
-				roundWinner = 0;
 				cout << roundWinner << endl;
-				this->enemyLogic();
+				enemyLogic(player,enemy);
 				cout << "------------------------------------------" << endl;
 				cout << endl;
 
@@ -302,34 +196,126 @@ public:
 
 	}
 
+	//items : player is ABLE to use 1 item before his move ->optional
+	void item_shield() { //add nx(?) shield that can tank damage, so the player doesnt get damage at ALL.
+		rarity = "Epic";
+	}
 
-	void battle(int _enemyCount) {
-		int playerCount, enemyCount;
-		bool playerIsAlive = 1, enemyIsAlive = 1; //checks if there is still player or enemies are still alive
+	void item_poisonSword() { // Effect used in player's next attack and deals poison which can (1. -HP for enemy every turn for n(?) turn ; 2.Debuff lower damage(?))
+		rarity = "Rare";
+	}
 
+	void item_angelRay() { //like flashbang, stuns enemy in the next turn (guarantee turn on next one -> skip roll dice -> interaction menu)
+		rarity = "Rare";
+	}
 
-		playerCount = 2;//player and enemy count masih misal untuk test aja
-		enemyCount = _enemyCount;
+	void item_realityAlter() { //"bend reality to your will" incrase your max dice.
+		rarity = "Epic";
+	}
 
+	void item_immortal() { // grant revive with half health.
+		rarity = "Legendary";
+	}
 
-		while (playerIsAlive == 1 || enemyIsAlive == 1) {	//selama check player / enemy belum mati jalan tros.. +dice battle interaction belum
-			for (playerIndex = 1; playerIndex <= playerCount; playerIndex++)
-				for (enemyIndex = 1; enemyIndex <= enemyCount; enemyIndex++) {
-					//player
-					cout << "Player Index = " << playerIndex << " is attacking " << enemyIndex << endl;
-					this->playerStatsJuggle();
-					cout << "Test Player = ";
-					checkPlayerStats();
-					cout << endl;
-					//enemy
-					this->enemyStatsJuggle();
-					cout << "Test Enemy = ";
-					checkEnemyStats();
-					cout << endl;
-					this->diceBattle();
-				}
+	//item effect logic
+	void itemLogic() {
 
+	}
+
+	void battle(playerStats& player, enemyStats& enemy) {	// battle begins lol
+		while (player.getHP() != 0 || enemy.getHP() != 0) {
+			this->diceBattle(player, enemy);
+			player.checkStats();
+			enemy.checkStats();
 		}
+	}
+
+
+	//levels : tutorial
+	void tutorial() {
+		playerStats player("Ralph", 60, 40, 15, 0);
+		enemyStats slime("Tutorial Slime", 1, 2, 2, 1);
+	}
+
+	//transisi dr tutorial ke level 1 - 2
+
+	void level1_stage1() {
+		playerStats player("Ralph", 60, 40, 20, 10);
+
+	}
+
+	void level1_stage2() {
+		playerStats player("Ralph", 60, 40, 20, 10);
+	}
+
+	void level1_stage3() {
+		playerStats player("Ralph", 60, 40, 20, 10);
+	}
+
+	//transisi level 1 - 2
+
+	void level2_stage1() {
+		playerStats player("Ralph", 45, 30, 15, 7);
+	}
+
+	void level2_stage2() {
+		playerStats player("Ralph", 45, 30, 15, 7);
+	}
+
+	void level2_bossStage() {
+		playerStats player("Ralph", 45, 30, 15, 7);
+	}
+
+	//tansisi level 2 - 3 (jan lup stats player turun)
+
+	void level3_stage1() {
+		playerStats player("Ralph", 45, 30, 16, 7);
+	}
+
+	void level3_stage2() {
+		playerStats player("Ralph", 45, 30, 15, 7);
+	}
+
+	void level3_stage3() {
+		playerStats player("Ralph", 45, 30, 15, 7);
+	}
+
+	void level3_gateKeeper() {
+		playerStats player("Ralph", 45, 30, 15, 7);
+	}
+
+	//masuk ke kastil iblis transisi ke 3 - 4
+
+	void level4_stage1() {
+		playerStats player("Ralph", 25, 20, 10, 5);
+	}
+
+	void level4_stage2() {
+		playerStats player("Ralph", 25, 20, 10, 5);
+	}
+
+	void level4_stage3() {
+		playerStats player("Ralph", 25, 20, 10, 5);
+	}
+
+	//masuk ke dragon realm transisi ke 4 - 5
+
+	void level5_stage1() {
+		playerStats player("Ralph", 25, 20, 10, 5);
+	}
+
+	void level5_stage2() {
+		playerStats player("Ralph", 25, 20, 10, 5);
+	}
+
+	void level5_stage3() {
+		playerStats player("Ralph", 25, 20, 10, 5);
+	}
+
+	//final boss
+
+	void finalBoss() {
+		playerStats player("Ralph", 12, 10, 5, 2);
 	}
 };
 
@@ -339,30 +325,22 @@ class animation { //draw model taru sini semua
 
 int main()
 {
-
+	
 	//Set main player and mage stats
-	playerStats MainPlayer("Ralph", 60, 40, 15, 0, 1);
-	MainPlayer.checkPlayerStats(); cout << endl;
-
-	playerStats MagePlayer("Aurora", 55, 30, 25, 15, 2);
-	MagePlayer.checkPlayerStats(); cout << endl;
+	playerStats Player("Ralph", 60, 40, 15, 0);
+	Player.checkStats(); cout << endl;
 
 	//Enemy Stats trial
-	enemyStats Skeleton("Skeleton 1", 5, 15, 5, 0, 0);
-	Skeleton.checkEnemyStats(); cout << endl;
-	enemyStats Slime("Slime 2", 3, 5, 5, 0, 0);
-	Slime.checkEnemyStats(); cout << endl;
-	enemyStats Zombie("Zombie 3", 7, 25, 7, 0, 0);
-	Zombie.checkEnemyStats(); cout << endl;
-	enemyStats Dragon("Dragon 4", 15, 35, 15, 0, 0);
-	Dragon.checkEnemyStats(); cout << endl;
+	enemyStats Skeleton("Skeleton", 5, 15, 5, 0);
+	Skeleton.checkStats(); cout << endl;
+	
 
 
 
 	cout << "-------------------------------" << endl << endl;
 
-	//Battle StartBattle;
-	//StartBattle.battle(4); //insert jumlah musuh
+	Battle StartBattle;
+	StartBattle.battle(Player,Skeleton); //insert jumlah musuh
 	return 0;
 }
 
