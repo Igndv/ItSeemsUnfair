@@ -10,6 +10,7 @@ class core {
 protected:
     string name;
     int level, HP, attack, heal;
+    int shield_count = 0, poison_count = 0, angleRay_count = 0, realityAlter_count = 0, immortal_count = 0, raygun_count = 0; //items count
 
 public:
     core() {
@@ -65,11 +66,20 @@ public:
 
 class Battle : public core { //dicebattle dll nti masuk sini semua
 private:
-    bool itemAvail;
     string rarity;
-    int maxHP_Player, maxHP_Enemy;
 
 public:
+    int maxHP_Player, maxHP_Enemy;
+
+    bool itemAvail() {
+        bool avail;
+        if (shield_count == 0 || poison_count == 0 || angleRay_count == 0 || realityAlter_count == 0 || immortal_count == 0 || raygun_count == 0) {
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
 
     void getMaxHP(playerStats& player, enemyStats& enemy) { //taru diawal ya biar bisa ambil max HP nya sekali aja
         maxHP_Player = player.getHP();
@@ -113,8 +123,8 @@ public:
         int healing = player.getHeal();
         int health = player.getHP();
         health += healing;
-        if (health >= maxHP_Player) {
-            health = maxHP_Player;
+        if (health >= this->maxHP_Player) {
+            health = this->maxHP_Player;
         }
         player.setHP(health);
         cout << player.getName() << " healed for " << healing << " HP. HP is now " << player.getHP() << endl;
@@ -126,14 +136,6 @@ public:
     }
 
     // heal end
-
-    //item
-    void itemPick() {
-        this->getDamage();
-        cout << "Wide Attack was Initialized! (" << attack << ")" << endl;
-    }
-
-    //item end
 
     //items : player is ABLE to use 1 item before his move ->optional
     void item_shield() { //add nx(?) shield that can tank damage, so the player doesnt get damage at ALL.
@@ -157,14 +159,80 @@ public:
         rarity = "Legendary";
     }
 
-    //item effect logic
-    void itemLogic() {
-
+    void item_raygun() { //cheat item = instant kill
+        rarity = "Cheat";
     }
+
+    //item
+    void itemPick() {
+        char ch;
+
+        cout << "Choose your item to use:\n" << "1. Shield " << shield_count << "\n 2. Poison Sword " << poison_count << "\n 3. Angle Ray " << angleRay_count << "\n 4. Reality Alter " << realityAlter_count << "\n 5. Immortal " << immortal_count << "\n 6. ??? " << raygun_count;
+
+        ch = _getch();
+
+        if (ch == '1') { //shield
+            if (shield_count > 0) {
+                this->item_shield();
+                shield_count--;
+            }
+            else {
+                cout << "Item not owned\n";
+            }
+        }
+        else if (ch == '2') { //poison
+            if (poison_count > 0) {
+                this->item_poisonSword();
+                poison_count--;
+            }
+            else {
+                cout << "Item not owned\n";
+            }
+        }
+        else if (ch == '3') { //angle ray
+            if (angleRay_count > 0) {
+                this->item_angelRay();
+                angleRay_count--;
+            }
+            else {
+                cout << "Item not owned\n";
+            }
+        }
+        else if (ch == '4') { //reality alter
+            if (realityAlter_count > 0) {
+                this->item_realityAlter();
+                realityAlter_count--;
+            }
+            else {
+                cout << "Item not owned\n";
+            }
+        }
+        else if (ch == '5') { // immortal
+            if (immortal_count > 0) {
+                this->item_immortal();
+                immortal_count--;
+            }
+            else {
+                cout << "Item not owned\n";
+            }
+        }
+        else if (ch == '6') { // ??? / raygun (cheat)
+            if (raygun_count > 0) {
+                this->item_raygun();
+                raygun_count--;
+            }
+            else {
+                cout << "Item not owned\n";
+            }
+        }
+    }
+
+    //item end
 
     void interactionMenu(playerStats& player, enemyStats& enemy) { //Menu interaksi, sementara pake cout (belum dibedain buat player 1 dan 2)
         char ch;
-        cout << player.getName() << " wants to :" << endl << "1. Slash" << endl << "2. Heal" << endl;
+        bool doneItem = 0;
+        cout << player.getName() << " wants to :" << endl << "1. Slash" << endl << "2. Heal" << endl << "3. Item" << itemAvail() << endl;
 
         ch = _getch();
         if (ch == '1') {
@@ -174,7 +242,14 @@ public:
             heal_Player(player);
         }
         else if (ch == '3') {
-            itemPick();
+            if (itemAvail() == 1 && doneItem == 0) {
+                this->itemPick(); //cuman bisa sekali && ketika punya item doang baru bisa akses
+                doneItem = 1;
+            }
+            else {
+                cout << "Items are not Available\n";
+            }
+            interactionMenu(player, enemy);
         }
         else {
             interactionMenu(player, enemy);
@@ -219,6 +294,7 @@ public:
 
     void battle(playerStats& player, enemyStats& enemy) { // battle begins lol
         getMaxHP(player, enemy); // get max HP
+        cout << "\nMax Player HP : " << maxHP_Player << "\nMax Enemy HP : " << maxHP_Enemy << endl;
 
         while (player.getHP() > 0 && enemy.getHP() > 0) {
             diceBattle(player, enemy);
@@ -238,7 +314,7 @@ public:
 
     //levels : tutorial
     void tutorial() {
-        playerStats player("Ralph", 60, 40, 15, 0);
+        playerStats player("Ralph", 60, 40, 15, 10);
         player.checkStats();
         enemyStats slime("Tutorial Slime", 1, 2, 2, 1);
         slime.checkStats();
