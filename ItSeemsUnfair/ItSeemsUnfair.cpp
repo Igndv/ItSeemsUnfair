@@ -5,6 +5,9 @@
 
 using namespace std;
 
+int screenWidth = 1280;
+int screenHeight = 720;
+
 //assign class
 class core {
 protected:
@@ -64,7 +67,38 @@ public:
     }
 };
 
-class Battle : public core { //dicebattle dll nti masuk sini semua
+class animation {
+public:
+    //All Background : status not init yet
+    Texture2D startMenu;
+    Texture2D tutorialBG;
+    Texture2D level1BG;
+    Texture2D level2BG;
+    Texture2D level3BG;
+    Texture2D level4BG;
+    Texture2D level5BG;
+    Texture2D finalBossBG;
+
+    //All Effects
+    Texture2D healEffect;
+
+    //All Player Textures
+    Texture2D playerLevel4 = LoadTexture("Assets/Player/level4_player.png");
+    Texture2D playerLevel3 = LoadTexture("Assets/Player/level3_player.png");
+    Texture2D playerLevel2 = LoadTexture("Assets/Player/level2_player.png");
+    Texture2D playerLevel1 = LoadTexture("Assets/Player/level1_player.png");
+
+    //All Enemy Textures
+    Texture2D slime = LoadTexture("Assets/Enemy/slime_enemy.png");
+
+    void draw() {
+        DrawTexture(playerLevel4, 0,0,WHITE);
+        DrawTexture(slime, 200, 200, WHITE);
+    }
+};
+
+
+class Battle : public core, public animation{ //dicebattle dll nti masuk sini semua
 private:
     string rarity;
 
@@ -405,22 +439,26 @@ public:
     }
 };
 
-class animation { //draw model taru sini semua
-
-};
-
 int main()
-{
+{  
     //Battle StartTutorial;
     //StartTutorial.tutorial();
 
-    InitWindow(800, 800, "It Seems Unfair?!");
+    InitWindow(screenWidth, screenHeight, "It Seems Unfair?!");
     SetTargetFPS(24);
 
     while (WindowShouldClose() == false) {
+
+        
         BeginDrawing();
 
+        ClearBackground(RAYWHITE);
+        animation player;
+        player.draw();
+        
+
         EndDrawing();
+
     }
     CloseWindow();
 }
