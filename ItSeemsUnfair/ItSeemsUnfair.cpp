@@ -411,8 +411,18 @@ class animation { //draw model taru sini semua
 
 int main()
 {
-    Battle StartTutorial;
-    StartTutorial.tutorial();
+    //Battle StartTutorial;
+    //StartTutorial.tutorial();
+
+    InitWindow(800, 800, "It Seems Unfair?!");
+    SetTargetFPS(24);
+
+    while (WindowShouldClose() == false) {
+        BeginDrawing();
+
+        EndDrawing();
+    }
+    CloseWindow();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
