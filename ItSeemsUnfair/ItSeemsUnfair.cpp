@@ -69,6 +69,15 @@ public:
 
 class animation {
 public:
+    int playerX = 250;
+    int playerY = 350;
+    int enemyX = 950;
+    int enemyY = 200;
+
+    //Logo
+    Texture2D logo = LoadTexture("Assets/Logo/logo.PNG");
+    //DrawTexture(logo, 300, 100, WHITE);  punya draw logo
+
     //All Background : status not init yet
     Texture2D startMenu;
     Texture2D tutorialBG;
@@ -91,9 +100,22 @@ public:
     //All Enemy Textures
     Texture2D slime = LoadTexture("Assets/Enemy/slime_enemy.png");
 
-    void draw() {
-        DrawTexture(playerLevel4, 0,0,WHITE);
-        DrawTexture(slime, 200, 200, WHITE);
+    void drawLoseScreen() {
+
+    }
+
+    void drawWinScreen() {
+
+    }
+
+    void drawTutorial() {
+        DrawTexture(playerLevel4, playerX, playerY,WHITE);
+        DrawTexture(slime, enemyX, enemyY, WHITE);
+    }
+
+    void drawlevel1_stage1() {
+        DrawTexture(playerLevel4, playerX, playerY, WHITE);
+        DrawTexture(slime, enemyX, enemyY, WHITE);
     }
 };
 
@@ -452,9 +474,9 @@ int main()
         
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(GREEN);
         animation player;
-        player.draw();
+        player.drawTutorial();
         
 
         EndDrawing();
