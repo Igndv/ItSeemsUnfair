@@ -1,12 +1,24 @@
 #include <iostream>
-#include "raylib.h"
+#include <raylib.h>
 #include <time.h>
-#include <conio.h>
 
 using namespace std;
 
 int screenWidth = 1280;
 int screenHeight = 720;
+
+//place holder x y lokasi enemy and player 
+int uiXPlayer = 1;
+int uiYPlayer = 2;
+int uiXEnemy = 3;
+int uiYEnemy = 4;
+
+int uiXCenter =320;
+int uiYcenter =360;
+
+
+
+
 
 //assign class
 class core {
@@ -40,8 +52,11 @@ public:
         HP = newHP;
     }
 
-    void checkStats() { //cek statistik
-        cout << name << "'s Level = " << level << endl << "HP = " << HP << endl << "Attack = " << attack << endl;
+    void checkStats(int _x, int _y) { //cek statistik (lompat 30 pixel ke bawah)
+        DrawText(name.c_str(), _x, _y, 30, WHITE);
+        DrawText(TextFormat("HP : %d", HP), _x, _y + 40, 30, WHITE);
+        DrawText(TextFormat("Attack : %d", attack), _x, _y + 80, 30, WHITE);
+        DrawText(TextFormat("Heal : %d", heal), _x, _y + 120, 30, WHITE);
     }
 };
 
@@ -92,13 +107,31 @@ public:
     Texture2D healEffect;
 
     //All Player Textures
-    Texture2D playerLevel4 = LoadTexture("Assets/Player/level4_player.png");
-    Texture2D playerLevel3 = LoadTexture("Assets/Player/level3_player.png");
-    Texture2D playerLevel2 = LoadTexture("Assets/Player/level2_player.png");
-    Texture2D playerLevel1 = LoadTexture("Assets/Player/level1_player.png");
+    Texture2D playerLevel4;
+    Texture2D playerLevel3;
+    Texture2D playerLevel2;
+    Texture2D playerLevel1;
 
     //All Enemy Textures
     Texture2D slime = LoadTexture("Assets/Enemy/slime_enemy.png");
+
+    animation() {
+        logo = LoadTexture("Assets/Logo/logo.PNG");
+        //startMenu = LoadTexture("Assets/Backgrounds/start_menu.png"); // Example path
+        //tutorialBG = LoadTexture("Assets/Backgrounds/tutorial_bg.png");
+        //level1BG = LoadTexture("Assets/Backgrounds/level1_bg.png");
+        //level2BG = LoadTexture("Assets/Backgrounds/level2_bg.png");
+        //level3BG = LoadTexture("Assets/Backgrounds/level3_bg.png");
+        //level4BG = LoadTexture("Assets/Backgrounds/level4_bg.png");
+        //level5BG = LoadTexture("Assets/Backgrounds/level5_bg.png");
+        //finalBossBG = LoadTexture("Assets/Backgrounds/final_boss_bg.png");
+        //healEffect = LoadTexture("Assets/Effects/heal_effect.png");
+        playerLevel4 = LoadTexture("Assets/Player/level4_player.png");
+        playerLevel3 = LoadTexture("Assets/Player/level3_player.png");
+        playerLevel2 = LoadTexture("Assets/Player/level2_player.png");
+        playerLevel1 = LoadTexture("Assets/Player/level1_player.png");
+        slime = LoadTexture("Assets/Enemy/slime_enemy.png");
+    }
 
     void drawLoseScreen() {
 
@@ -114,13 +147,15 @@ public:
     }
 
     void drawlevel1_stage1() {
+        BeginDrawing();
         DrawTexture(playerLevel4, playerX, playerY, WHITE);
         DrawTexture(slime, enemyX, enemyY, WHITE);
+        EndDrawing();
     }
 };
 
 
-class Battle : public core, public animation{ //dicebattle dll nti masuk sini semua
+class Battle : public core, public animation { //dicebattle dll nti masuk sini semua
 private:
     string rarity;
 
@@ -144,38 +179,49 @@ public:
 
     //slash
     void slash_Player(playerStats& player, enemyStats& enemy) { //slash from enemy to player <-> player to enemy
+        BeginDrawing();
         int damage = player.getDamage();
-        cout << player.getName() << " attacks " << enemy.getName() << " for " << damage << " damage." << endl;
+        DrawText(TextFormat("%s attacks %s for %d damage", player.getName(), enemy.getName(), damage), uiXCenter, uiYcenter, 30, WHITE);
         getSlash_Enemy(enemy, damage);
+        EndDrawing();
     }
 
     void slash_Enemy(playerStats& player, enemyStats& enemy) {
+        BeginDrawing();
         int damage = enemy.getDamage();
-        cout << enemy.getName() << " attacks " << player.getName() << " for " << damage << " damage." << endl;
+        DrawText(TextFormat("%s attacks %s for %d damage", enemy.getName(), player.getName(), damage), uiXCenter, uiYcenter, 30, WHITE);
         getSlash_Player(player, damage);
+        EndDrawing();
     }
 
     void getSlash_Player(playerStats& player, int slash) { //update health from damage received from enemy - parameter damage from enemy
+        BeginDrawing();
         int health = player.getHP();
         health -= slash;
         player.setHP(health);
-        cout << player.getName() << "'s HP is now " << player.getHP() << endl;
+        DrawText(TextFormat("%s's HP is now %d", player.getName(), player.getHP()), uiXCenter, uiYcenter, 30, WHITE);
+        EndDrawing();
     }
 
     void getSlash_Enemy(enemyStats& enemy, int slash) { //update health from damage received from enemy - parameter damage from enemy
+        BeginDrawing();
         int health = enemy.getHP();
         health -= slash;
         enemy.setHP(health);
-        cout << enemy.getName() << "'s HP is now " << enemy.getHP() << endl;
+        DrawText(TextFormat("%s's HP is now %d", enemy.getName(), enemy.getHP()), uiXCenter, uiYcenter, 30, WHITE);
+        EndDrawing();
     }
 
     void slashAttack(playerStats& player, enemyStats& enemy) {
+        BeginDrawing();
         slash_Player(player, enemy);
-        cout << "Slash was Initialized! (" << attack << ")" << endl;
+        DrawText(TextFormat("Slash was Initialiazed (%d)", attack), uiXCenter, uiYcenter, 30, WHITE);
+        EndDrawing();
     }
 
     // heal
     void getHeal_Player(playerStats& player) {
+        BeginDrawing();
         int healing = player.getHeal();
         int health = player.getHP();
         health += healing;
@@ -183,12 +229,15 @@ public:
             health = this->maxHP_Player;
         }
         player.setHP(health);
-        cout << player.getName() << " healed for " << healing << " HP. HP is now " << player.getHP() << endl;
+        DrawText(TextFormat("%s is healed for %d. HP is now %d", player.getName(), healing, player.getHP()), uiXCenter, uiYcenter, 30, WHITE);
+        EndDrawing();
     }
 
     void heal_Player(playerStats& player) {
+        BeginDrawing();
         getHeal_Player(player);
-        cout << "Heal was Initialized!" << endl;
+        DrawText(TextFormat("Heal was Initialiazed (%d)", heal), uiXCenter, uiYcenter, 30, WHITE);
+        EndDrawing();
     }
 
     // heal end
@@ -221,162 +270,173 @@ public:
 
     //item
     void itemPick() {
-        char ch;
+        BeginDrawing();
+        DrawText("Chose Your Item to Use:", uiXPlayer, uiYPlayer, 30, WHITE);
+        DrawText(TextFormat("1. Shield (%d)", shield_count), uiXPlayer, uiYPlayer + 40, 30, WHITE);
+        DrawText(TextFormat("2. Poison (%d)", poison_count), uiXPlayer, uiYPlayer + 80, 30, WHITE);
+        DrawText(TextFormat("3. Angle Ray (%d)", angleRay_count), uiXPlayer, uiYPlayer + 120, 30, WHITE);
+        DrawText(TextFormat("4. Reality Alter (%d)", realityAlter_count), uiXPlayer, uiYPlayer + 160, 30, WHITE);
+        DrawText(TextFormat("5. Immortal (%d)", shield_count), uiXPlayer, uiYPlayer + 200, 30, WHITE);
+        DrawText(TextFormat("6. ??? (%d)", raygun_count), uiXPlayer, uiYPlayer + 230, 30, WHITE);
 
-        cout << "Choose your item to use:\n" << "1. Shield " << shield_count << "\n 2. Poison Sword " << poison_count << "\n 3. Angle Ray " << angleRay_count << "\n 4. Reality Alter " << realityAlter_count << "\n 5. Immortal " << immortal_count << "\n 6. ??? " << raygun_count;
 
-        ch = _getch();
-
-        if (ch == '1') { //shield
+        if (IsKeyPressed(KEY_KP_1)) { //shield
             if (shield_count > 0) {
                 this->item_shield();
                 shield_count--;
             }
             else {
-                cout << "Item not owned\n";
+                DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (ch == '2') { //poison
+        else if (IsKeyPressed(KEY_KP_2)) { //poison
             if (poison_count > 0) {
                 this->item_poisonSword();
                 poison_count--;
             }
             else {
-                cout << "Item not owned\n";
+                DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (ch == '3') { //angle ray
+        else if (IsKeyPressed(KEY_KP_3)) { //angle ray
             if (angleRay_count > 0) {
                 this->item_angelRay();
                 angleRay_count--;
             }
             else {
-                cout << "Item not owned\n";
+                DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (ch == '4') { //reality alter
+        else if (IsKeyPressed(KEY_KP_4)) { //reality alter
             if (realityAlter_count > 0) {
                 this->item_realityAlter();
                 realityAlter_count--;
             }
             else {
-                cout << "Item not owned\n";
+                DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (ch == '5') { // immortal
+        else if (IsKeyPressed(KEY_KP_5)) { // immortal
             if (immortal_count > 0) {
                 this->item_immortal();
                 immortal_count--;
             }
             else {
-                cout << "Item not owned\n";
+                DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (ch == '6') { // ??? / raygun (cheat)
+        else if (IsKeyPressed(KEY_KP_6)) { // ??? / raygun (cheat)
             if (raygun_count > 0) {
                 this->item_raygun();
                 raygun_count--;
             }
             else {
-                cout << "Item not owned\n";
+                DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
+        EndDrawing();
     }
 
     //item end
 
-    void interactionMenu(playerStats& player, enemyStats& enemy) { //Menu interaksi, sementara pake cout (belum dibedain buat player 1 dan 2)
-        char ch;
+    void interactionMenu(playerStats& player, enemyStats& enemy) { //Menu interaksi
+        BeginDrawing();
         bool doneItem = 0;
-        cout << player.getName() << " wants to :" << endl << "1. Slash" << endl << "2. Heal" << endl << "3. Item" << itemAvail() << endl;
+        DrawText(TextFormat("%s wants to:"), uiXPlayer, uiYPlayer, 30, WHITE);
+        DrawText("1. Slash", uiXPlayer, uiYPlayer + 40, 30, WHITE);
+        DrawText("2. Heal", uiXPlayer, uiYPlayer + 80, 30, WHITE);
+        DrawText(TextFormat("3. Item (%d)", itemAvail()), uiXPlayer, uiYPlayer + 120, 30, WHITE);
 
-        ch = _getch();
-        if (ch == '1') {
+        if (IsKeyPressed(KEY_KP_1)) {
             slash_Player(player, enemy);
         }
-        else if (ch == '2') {
+        else if (IsKeyPressed(KEY_KP_2)) {
             heal_Player(player);
         }
-        else if (ch == '3') {
+        else if (IsKeyPressed(KEY_KP_3)) {
             if (itemAvail() == 1 && doneItem == 0) {
                 this->itemPick(); //cuman bisa sekali && ketika punya item doang baru bisa akses
                 doneItem = 1;
             }
             else {
-                cout << "Items are not Available\n";
+                DrawText("Items are not Available", uiXCenter, uiYcenter, 30, WHITE);
             }
             interactionMenu(player, enemy);
         }
         else {
             interactionMenu(player, enemy);
         }
+        EndDrawing();
     }
 
-    void enemyLogic(playerStats& player, enemyStats& enemy) { //enemy baru cuman bisa attack
-        cout << enemy.getName() << " wants to Attack (-" << enemy.getDamage() << ")" << endl;
+    void enemyLogic(playerStats& player, enemyStats& enemy) {
+        BeginDrawing();
+        DrawText(TextFormat("%s wants to Attack (-%d)", enemy.getName(), enemy.getDamage()), uiXCenter, uiYcenter, 30, WHITE);
         slash_Enemy(player, enemy);
+        EndDrawing();
     }
 
     void diceBattle(playerStats& player, enemyStats& enemy) { //+interaction when win dice
+        BeginDrawing();
         int dice1, dice2;
-        char ch;
         srand(time(0));
 
-        cout << "Press space to roll dice!" << endl;
-        ch = _getch();
-        if (ch == ' ') {
-            dice1 = (rand() % 6) + 1;
-            dice2 = (rand() % 6) + 1;
+        DrawText("Press space to roll dice!", uiXCenter, uiYcenter, 30, WHITE);
+
+        if (IsKeyPressed(KEY_SPACE)) {
+            dice1 = (rand() % 6) + 1;//visual untuk dice1
+            dice2 = (rand() % 6) + 1;//visual untuk dice2
 
             if (dice1 > dice2) {
-                cout << "Your Roll : " << dice1 << " | Your Enemy Roll : " << dice2 << endl << "Your Chance to attack!" << endl;
+                DrawText(TextFormat("Your Roll : %d | Your Enemy Roll : %d", dice1, dice2), uiXCenter, uiYcenter + 80, 30, WHITE);
+                DrawText("Your Chance to Attack!", uiXCenter, uiYcenter + 120, 30, WHITE);
+
                 interactionMenu(player, enemy);
-                cout << "------------------------------------------" << endl;
-                cout << endl;
             }
             else if (dice1 < dice2) {
-                cout << "Your Roll : " << dice1 << " | Your Enemy Roll : " << dice2 << endl << "Enemy's Chance to attack!" << endl;
+                DrawText(TextFormat("Your Roll : %d | Your Enemy Roll : %d", dice1, dice2), uiXCenter, uiYcenter + 80, 30, WHITE);
+                DrawText("Enemy's Chance to Attack!", uiXCenter, uiYcenter + 120, 30, WHITE);
+
                 enemyLogic(player, enemy);
-                cout << "------------------------------------------" << endl;
-                cout << endl;
             }
             else if (dice1 == dice2) {
-                cout << "TIE" << endl;
-                cout << "------------------------------------------" << endl;
-                cout << endl;
+                DrawText("Tie!", uiXCenter, uiYcenter + 120, 30, WHITE);
             }
         }
+        EndDrawing();
     }
 
     void battle(playerStats& player, enemyStats& enemy) { // battle begins lol
+        BeginDrawing();
         getMaxHP(player, enemy); // get max HP
-        cout << "\nMax Player HP : " << maxHP_Player << "\nMax Enemy HP : " << maxHP_Enemy << endl;
 
         while (player.getHP() > 0 && enemy.getHP() > 0) {
             diceBattle(player, enemy);
-            player.checkStats();
-            cout << "-------------\n";
-            enemy.checkStats();
+            player.checkStats(0, 0);
+            enemy.checkStats(700, 0);
         }
 
         if (player.getHP() <= 0) {
-            cout << player.getName() << " has been defeated." << endl;
+            DrawText(TextFormat("%s has been defeated.", player.getName()), uiXCenter, uiYcenter, 80, WHITE);
         }
 
         if (enemy.getHP() <= 0) {
-            cout << enemy.getName() << " has been defeated." << endl;
+            DrawText(TextFormat("%s has been defeated.", enemy.getName()), uiXCenter, uiYcenter, 80, WHITE);
         }
+        EndDrawing();
     }
 
     //levels : tutorial
     void tutorial() {
+        BeginDrawing();
+        ClearBackground(GREEN);
+        drawTutorial();
         playerStats player("Ralph", 60, 40, 15, 10);
-        player.checkStats();
+        player.checkStats(0, 0);
         enemyStats slime("Tutorial Slime", 1, 2, 2, 1);
-        slime.checkStats();
-
-        Battle StartBattle;
-        StartBattle.battle(player, slime);
+        slime.checkStats(600, 0);
+        battle(player, slime);
+        EndDrawing();
     }
 
     //transisi dr tutorial ke level 1 - 2
@@ -459,31 +519,58 @@ public:
     void finalBoss() {
         playerStats player("Ralph", 12, 10, 5, 2);
     }
+
+    void quitGame() {
+        // Code to quit game
+        CloseWindow();  // This will close the window and exit the application
+    }
 };
 
-int main()
-{  
-    //Battle StartTutorial;
-    //StartTutorial.tutorial();
+void createText(const char* text, int textX, int textY, int fontSize, Color color, float mouseX, float mouseY, Battle* battle, void (Battle::* onClick)()) {
+    // Update
+    int textWidth = MeasureText(text, fontSize);
+    int textHeight = fontSize;  // In Raylib, font size can be used as height
 
-    InitWindow(screenWidth, screenHeight, "It Seems Unfair?!");
-    SetTargetFPS(24);
+    bool isMouseOverText = (mouseX >= textX) && (mouseX <= (textX + textWidth)) &&
+        (mouseY >= textY) && (mouseY <= (textY + textHeight));
 
-    while (WindowShouldClose() == false) {
-
-        
-        BeginDrawing();
-
-        ClearBackground(GREEN);
-        animation player;
-        player.drawTutorial();
-        
-
-        EndDrawing();
-
+    // Draw
+    if (isMouseOverText) {
+        DrawText(text, textX, textY, fontSize, GRAY);  // Change text color when hovered
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            (battle->*onClick)();  // Call member function using object pointer
+        }
     }
-    CloseWindow();
+    else {
+        DrawText(text, textX, textY, fontSize, color);
+    }
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+
+void mainMenu() {
+    Battle startBattle;
+    Vector2 mousePosition = GetMousePosition();
+    float mouseX = mousePosition.x;
+    float mouseY = mousePosition.y;
+
+    BeginDrawing();
+    ClearBackground(BLUE);
+    DrawText("Main Menu", screenWidth / 2 - MeasureText("Main Menu", 80) / 2, screenHeight / 2 - 80, 80, WHITE);
+    createText("1. Tutorial", screenWidth / 2 - MeasureText("1. Tutorial", 30) / 2, screenHeight / 2 + 40, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::tutorial);
+    createText("2. Quit", screenWidth / 2 - MeasureText("2. Quit", 30) / 2, screenHeight / 2 + 80, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::quitGame);
+
+    EndDrawing();
+}
+
+int main()
+{
+    InitWindow(screenWidth, screenHeight, "It Seems Unfair?!");
+    SetTargetFPS(24); 
+
+    while (!WindowShouldClose()) { //soalnya loop disini cok anj bajingan
+        
+        mainMenu();
+
+    }
+}
+ 
