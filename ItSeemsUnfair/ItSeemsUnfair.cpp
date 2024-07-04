@@ -180,8 +180,8 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("%s attacks %s for %d damage", player.getName().c_str(), enemy.getName().c_str(), damage), uiXCenter - 130, uiYcenter - 130, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
     }
 
     void slash_Enemy(playerStats& player, enemyStats& enemy) {
@@ -190,8 +190,8 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("%s attacks %s for %d damage", enemy.getName().c_str(), player.getName().c_str(), damage), uiXCenter-130, uiYcenter-130, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
     }
 
     void getSlash_Player(playerStats& player, int slash) { //update health from damage received from enemy - parameter damage from enemy
@@ -201,8 +201,8 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("%s's HP is now %d", player.getName().c_str(), player.getHP()), uiXCenter + 70, uiYcenter + 40, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
     }
 
     void getSlash_Enemy(enemyStats& enemy, int slash) { //update health from damage received from enemy - parameter damage from enemy
@@ -212,8 +212,9 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("%s's HP is now %d", enemy.getName().c_str(), enemy.getHP()), uiXCenter - 130, uiYcenter - 130, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
+
     }
 
     void slashAttack(playerStats& player, enemyStats& enemy) {
@@ -221,8 +222,8 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("Slash was Initialiazed (%d)", attack), uiXCenter + 70, uiYcenter, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
     }
 
     // heal
@@ -237,8 +238,8 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("%s is healed for %d. HP is now %d", player.getName().c_str(), healing, player.getHP()), uiXCenter + 70, uiYcenter + 40, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
     }
 
     void heal_Player(playerStats& player) {
@@ -246,8 +247,8 @@ public:
 
         BeginDrawing();
         DrawText(TextFormat("Heal was Initialiazed (%d)", heal), uiXCenter + 70, uiYcenter, 30, WHITE);
-        WaitTime(2.0);
         EndDrawing();
+        WaitTime(2.0);
     }
 
     // heal end
@@ -393,16 +394,48 @@ public:
     void diceBattle(playerStats& player, enemyStats& enemy) { //+interaction when win dice
 
         int dice1, dice2;
+        bool isSpacePressed = 0;
         srand(time(0));
 
-        drawTutorial(); //diganti sama void drawLevel (ada level selectornya)
-        BeginDrawing();
-        DrawText("Press space to roll dice!", uiXCenter + 150, uiYcenter, 30, WHITE);
-        EndDrawing();
-
-
         if (IsKeyPressed(KEY_SPACE)) {
+            isSpacePressed = 1;
+        }
 
+        if (isSpacePressed == 0) {
+            drawTutorial(); //diganti sama void drawLevel (ada level selectornya)
+            BeginDrawing();
+            DrawText("Press space to roll dice!", uiXCenter + 150, uiYcenter, 30, WHITE);
+            EndDrawing();
+        }
+        else {
+            dice1 = (rand() % 6) + 1;//visual untuk dice1
+            dice2 = (rand() % 6) + 1;//visual untuk dice2
+
+            DrawText(TextFormat("Your Roll : %d | Your Enemy Roll : %d", dice1, dice2), uiXCenter + 70, uiYcenter + 80, 30, WHITE);
+
+            if (dice1 > dice2) {
+
+
+                DrawText("Your Chance to Attack!", uiXCenter + 70, uiYcenter + 130, 30, WHITE);
+
+                interactionMenu(player, enemy);
+            }
+            else if (dice1 < dice2) {
+
+
+                DrawText("Enemy's Chance to Attack!", uiXCenter + 70, uiYcenter + 130, 30, WHITE);
+
+                enemyLogic(player, enemy);
+            }
+            else if (dice1 == dice2) {
+                DrawText("Tie!", uiXCenter, uiYcenter + 120, 30, WHITE);
+                WaitTime(2.0);
+            }
+        }
+
+        /*if (IsKeyPressed(KEY_SPACE)) {
+
+            isSpacePressed = 1;
             dice1 = (rand() % 6) + 1;//visual untuk dice1
             dice2 = (rand() % 6) + 1;//visual untuk dice2
 
@@ -426,7 +459,7 @@ public:
                 DrawText("Tie!", uiXCenter, uiYcenter + 120, 30, WHITE);
                 WaitTime(2.0);
             }
-        }
+        }*/
 
     }
 
@@ -560,7 +593,7 @@ public:
 
     void quitGame() {
         // Code to quit game
-        CloseWindow();  // This will close the window and exit the application
+        WindowShouldClose();  // This will close the window and exit the application
     }
 };
 
@@ -586,15 +619,17 @@ void createText(const char* text, int textX, int textY, int fontSize, Color colo
 
 void game() {
     Battle startBattle;
+    animation startanimation;
     Vector2 mousePosition = GetMousePosition();
     float mouseX = mousePosition.x;
     float mouseY = mousePosition.y;
 
     BeginDrawing();
     ClearBackground(BLUE);
-    DrawText("Main Menu", screenWidth / 2 - MeasureText("Main Menu", 80) / 2, screenHeight / 2 - 80, 80, WHITE);
-    createText("1. Tutorial", screenWidth / 2 - MeasureText("1. Tutorial", 30) / 2, screenHeight / 2 + 40, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::tutorial);
-    createText("2. Quit", screenWidth / 2 - MeasureText("2. Quit", 30) / 2, screenHeight / 2 + 80, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::quitGame);
+    DrawTexture(startanimation.logo,300,50,WHITE);
+    DrawText("Main Menu", screenWidth / 2 - MeasureText("Main Menu", 60) / 2 -325, screenHeight / 2 + 40, 60, WHITE);
+    createText("o> Start Game", screenWidth / 2 - MeasureText("o> Start Game", 30) / 2 - 370, screenHeight / 2 + 120, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::tutorial);
+    createText("o> Quit", screenWidth / 2 - MeasureText("o> Quit", 30) / 2 - 427, screenHeight / 2 + 160, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::quitGame);
     EndDrawing();
 }
 
@@ -604,7 +639,7 @@ int main()
     SetTargetFPS(24); 
 
     while (!WindowShouldClose()) { //soalnya loop disini cok anj bajingan
-        
+  
         game();
 
     }
