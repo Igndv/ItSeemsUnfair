@@ -8,16 +8,11 @@ int screenWidth = 1280;
 int screenHeight = 720;
 
 //place holder x y lokasi enemy and player 
-int uiXPlayer = 1;
-int uiYPlayer = 2;
-int uiXEnemy = 3;
-int uiYEnemy = 4;
+int uiXPlayer = 150;
+int uiYPlayer = 525;
 
 int uiXCenter =320;
 int uiYcenter =360;
-
-
-
 
 
 //assign class
@@ -142,15 +137,16 @@ public:
     }
 
     void drawTutorial() {
+        ClearBackground(GREEN);
         DrawTexture(playerLevel4, playerX, playerY,WHITE);
         DrawTexture(slime, enemyX, enemyY, WHITE);
     }
 
     void drawlevel1_stage1() {
-        BeginDrawing();
+        
         DrawTexture(playerLevel4, playerX, playerY, WHITE);
         DrawTexture(slime, enemyX, enemyY, WHITE);
-        EndDrawing();
+  
     }
 };
 
@@ -179,49 +175,58 @@ public:
 
     //slash
     void slash_Player(playerStats& player, enemyStats& enemy) { //slash from enemy to player <-> player to enemy
-        BeginDrawing();
         int damage = player.getDamage();
-        DrawText(TextFormat("%s attacks %s for %d damage", player.getName(), enemy.getName(), damage), uiXCenter, uiYcenter, 30, WHITE);
         getSlash_Enemy(enemy, damage);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s attacks %s for %d damage", player.getName().c_str(), enemy.getName().c_str(), damage), uiXCenter - 130, uiYcenter - 130, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     void slash_Enemy(playerStats& player, enemyStats& enemy) {
-        BeginDrawing();
         int damage = enemy.getDamage();
-        DrawText(TextFormat("%s attacks %s for %d damage", enemy.getName(), player.getName(), damage), uiXCenter, uiYcenter, 30, WHITE);
         getSlash_Player(player, damage);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s attacks %s for %d damage", enemy.getName().c_str(), player.getName().c_str(), damage), uiXCenter-130, uiYcenter-130, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     void getSlash_Player(playerStats& player, int slash) { //update health from damage received from enemy - parameter damage from enemy
-        BeginDrawing();
         int health = player.getHP();
         health -= slash;
         player.setHP(health);
-        DrawText(TextFormat("%s's HP is now %d", player.getName(), player.getHP()), uiXCenter, uiYcenter, 30, WHITE);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s's HP is now %d", player.getName().c_str(), player.getHP()), uiXCenter + 70, uiYcenter + 40, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     void getSlash_Enemy(enemyStats& enemy, int slash) { //update health from damage received from enemy - parameter damage from enemy
-        BeginDrawing();
         int health = enemy.getHP();
         health -= slash;
         enemy.setHP(health);
-        DrawText(TextFormat("%s's HP is now %d", enemy.getName(), enemy.getHP()), uiXCenter, uiYcenter, 30, WHITE);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s's HP is now %d", enemy.getName().c_str(), enemy.getHP()), uiXCenter - 130, uiYcenter - 130, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     void slashAttack(playerStats& player, enemyStats& enemy) {
-        BeginDrawing();
         slash_Player(player, enemy);
-        DrawText(TextFormat("Slash was Initialiazed (%d)", attack), uiXCenter, uiYcenter, 30, WHITE);
+
+        BeginDrawing();
+        DrawText(TextFormat("Slash was Initialiazed (%d)", attack), uiXCenter + 70, uiYcenter, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     // heal
     void getHeal_Player(playerStats& player) {
-        BeginDrawing();
         int healing = player.getHeal();
         int health = player.getHP();
         health += healing;
@@ -229,14 +234,19 @@ public:
             health = this->maxHP_Player;
         }
         player.setHP(health);
-        DrawText(TextFormat("%s is healed for %d. HP is now %d", player.getName(), healing, player.getHP()), uiXCenter, uiYcenter, 30, WHITE);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s is healed for %d. HP is now %d", player.getName().c_str(), healing, player.getHP()), uiXCenter + 70, uiYcenter + 40, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     void heal_Player(playerStats& player) {
-        BeginDrawing();
         getHeal_Player(player);
-        DrawText(TextFormat("Heal was Initialiazed (%d)", heal), uiXCenter, uiYcenter, 30, WHITE);
+
+        BeginDrawing();
+        DrawText(TextFormat("Heal was Initialiazed (%d)", heal), uiXCenter + 70, uiYcenter, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
@@ -278,9 +288,10 @@ public:
         DrawText(TextFormat("4. Reality Alter (%d)", realityAlter_count), uiXPlayer, uiYPlayer + 160, 30, WHITE);
         DrawText(TextFormat("5. Immortal (%d)", shield_count), uiXPlayer, uiYPlayer + 200, 30, WHITE);
         DrawText(TextFormat("6. ??? (%d)", raygun_count), uiXPlayer, uiYPlayer + 230, 30, WHITE);
+        EndDrawing();
 
 
-        if (IsKeyPressed(KEY_KP_1)) { //shield
+        if (IsKeyPressed(KEY_ONE)) { //shield
             if (shield_count > 0) {
                 this->item_shield();
                 shield_count--;
@@ -289,7 +300,7 @@ public:
                 DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (IsKeyPressed(KEY_KP_2)) { //poison
+        else if (IsKeyPressed(KEY_TWO)) { //poison
             if (poison_count > 0) {
                 this->item_poisonSword();
                 poison_count--;
@@ -298,7 +309,7 @@ public:
                 DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (IsKeyPressed(KEY_KP_3)) { //angle ray
+        else if (IsKeyPressed(KEY_THREE)) { //angle ray
             if (angleRay_count > 0) {
                 this->item_angelRay();
                 angleRay_count--;
@@ -307,7 +318,7 @@ public:
                 DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (IsKeyPressed(KEY_KP_4)) { //reality alter
+        else if (IsKeyPressed(KEY_FOUR)) { //reality alter
             if (realityAlter_count > 0) {
                 this->item_realityAlter();
                 realityAlter_count--;
@@ -316,7 +327,7 @@ public:
                 DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (IsKeyPressed(KEY_KP_5)) { // immortal
+        else if (IsKeyPressed(KEY_FIVE)) { // immortal
             if (immortal_count > 0) {
                 this->item_immortal();
                 immortal_count--;
@@ -325,7 +336,7 @@ public:
                 DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        else if (IsKeyPressed(KEY_KP_6)) { // ??? / raygun (cheat)
+        else if (IsKeyPressed(KEY_SIX)) { // ??? / raygun (cheat)
             if (raygun_count > 0) {
                 this->item_raygun();
                 raygun_count--;
@@ -334,26 +345,28 @@ public:
                 DrawText("Item not Owned", uiXCenter, uiYcenter, 30, WHITE);
             }
         }
-        EndDrawing();
     }
 
     //item end
 
     void interactionMenu(playerStats& player, enemyStats& enemy) { //Menu interaksi
-        BeginDrawing();
         bool doneItem = 0;
-        DrawText(TextFormat("%s wants to:"), uiXPlayer, uiYPlayer, 30, WHITE);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s wants to:", player.getName().c_str()), uiXPlayer, uiYPlayer, 30, WHITE);
         DrawText("1. Slash", uiXPlayer, uiYPlayer + 40, 30, WHITE);
         DrawText("2. Heal", uiXPlayer, uiYPlayer + 80, 30, WHITE);
         DrawText(TextFormat("3. Item (%d)", itemAvail()), uiXPlayer, uiYPlayer + 120, 30, WHITE);
+        EndDrawing();
+        
 
-        if (IsKeyPressed(KEY_KP_1)) {
+        if (IsKeyPressed(KEY_ONE)) {
             slash_Player(player, enemy);
         }
-        else if (IsKeyPressed(KEY_KP_2)) {
+        else if (IsKeyPressed(KEY_TWO)) {
             heal_Player(player);
         }
-        else if (IsKeyPressed(KEY_KP_3)) {
+        else if (IsKeyPressed(KEY_THREE)) {
             if (itemAvail() == 1 && doneItem == 0) {
                 this->itemPick(); //cuman bisa sekali && ketika punya item doang baru bisa akses
                 doneItem = 1;
@@ -366,75 +379,100 @@ public:
         else {
             interactionMenu(player, enemy);
         }
-        EndDrawing();
     }
 
     void enemyLogic(playerStats& player, enemyStats& enemy) {
-        BeginDrawing();
-        DrawText(TextFormat("%s wants to Attack (-%d)", enemy.getName(), enemy.getDamage()), uiXCenter, uiYcenter, 30, WHITE);
         slash_Enemy(player, enemy);
+
+        BeginDrawing();
+        DrawText(TextFormat("%s wants to Attack (-%d)", enemy.getName().c_str(), enemy.getDamage()), uiXCenter - 130, uiYcenter - 130, 30, WHITE);
+        WaitTime(2.0);
         EndDrawing();
     }
 
     void diceBattle(playerStats& player, enemyStats& enemy) { //+interaction when win dice
-        BeginDrawing();
+
         int dice1, dice2;
         srand(time(0));
 
-        DrawText("Press space to roll dice!", uiXCenter, uiYcenter, 30, WHITE);
+        drawTutorial(); //diganti sama void drawLevel (ada level selectornya)
+        BeginDrawing();
+        DrawText("Press space to roll dice!", uiXCenter + 150, uiYcenter, 30, WHITE);
+        EndDrawing();
+
 
         if (IsKeyPressed(KEY_SPACE)) {
+
             dice1 = (rand() % 6) + 1;//visual untuk dice1
             dice2 = (rand() % 6) + 1;//visual untuk dice2
 
+            DrawText(TextFormat("Your Roll : %d | Your Enemy Roll : %d", dice1, dice2), uiXCenter + 70, uiYcenter + 80, 30, WHITE);
+
             if (dice1 > dice2) {
-                DrawText(TextFormat("Your Roll : %d | Your Enemy Roll : %d", dice1, dice2), uiXCenter, uiYcenter + 80, 30, WHITE);
-                DrawText("Your Chance to Attack!", uiXCenter, uiYcenter + 120, 30, WHITE);
+
+                
+                DrawText("Your Chance to Attack!", uiXCenter + 70, uiYcenter + 130, 30, WHITE);
 
                 interactionMenu(player, enemy);
             }
             else if (dice1 < dice2) {
-                DrawText(TextFormat("Your Roll : %d | Your Enemy Roll : %d", dice1, dice2), uiXCenter, uiYcenter + 80, 30, WHITE);
-                DrawText("Enemy's Chance to Attack!", uiXCenter, uiYcenter + 120, 30, WHITE);
+
+              
+                DrawText("Enemy's Chance to Attack!", uiXCenter + 70, uiYcenter + 130, 30, WHITE);
 
                 enemyLogic(player, enemy);
             }
             else if (dice1 == dice2) {
                 DrawText("Tie!", uiXCenter, uiYcenter + 120, 30, WHITE);
+                WaitTime(2.0);
             }
         }
-        EndDrawing();
+
     }
 
     void battle(playerStats& player, enemyStats& enemy) { // battle begins lol
-        BeginDrawing();
+ 
         getMaxHP(player, enemy); // get max HP
 
         while (player.getHP() > 0 && enemy.getHP() > 0) {
             diceBattle(player, enemy);
             player.checkStats(0, 0);
-            enemy.checkStats(700, 0);
+            enemy.checkStats(800, 0);
         }
 
         if (player.getHP() <= 0) {
-            DrawText(TextFormat("%s has been defeated.", player.getName()), uiXCenter, uiYcenter, 80, WHITE);
+
+            drawTutorial();
+            BeginDrawing();
+            
+
+            DrawText(TextFormat("%s has been defeated.", player.getName().c_str()), screenWidth / 2 - MeasureText(TextFormat("%s has been defeated.", player.getName().c_str()), 60) / 2, screenHeight / 2 - 50, 60, RED);
+            EndDrawing();
+
+            WaitTime(5.0);
         }
 
         if (enemy.getHP() <= 0) {
-            DrawText(TextFormat("%s has been defeated.", enemy.getName()), uiXCenter, uiYcenter, 80, WHITE);
+
+            drawTutorial();
+            BeginDrawing();
+            
+
+            DrawText(TextFormat("%s has been defeated.", enemy.getName().c_str()), screenWidth / 2 - MeasureText(TextFormat("%s has been defeated.", enemy.getName().c_str()), 60) / 2, screenHeight / 2 - 50, 60, RED);
+            EndDrawing();
+
+            WaitTime(5.0);
         }
-        EndDrawing();
     }
 
     //levels : tutorial
     void tutorial() {
-        BeginDrawing();
-        ClearBackground(GREEN);
-        drawTutorial();
+
         playerStats player("Ralph", 60, 40, 15, 10);
-        player.checkStats(0, 0);
-        enemyStats slime("Tutorial Slime", 1, 2, 2, 1);
-        slime.checkStats(600, 0);
+        enemyStats slime("Tutorial Slime", 1, 5, 2, 1);
+        
+        BeginDrawing();
+        drawTutorial();
         battle(player, slime);
         EndDrawing();
     }
@@ -546,8 +584,7 @@ void createText(const char* text, int textX, int textY, int fontSize, Color colo
     }
 }
 
-
-void mainMenu() {
+void game() {
     Battle startBattle;
     Vector2 mousePosition = GetMousePosition();
     float mouseX = mousePosition.x;
@@ -558,7 +595,6 @@ void mainMenu() {
     DrawText("Main Menu", screenWidth / 2 - MeasureText("Main Menu", 80) / 2, screenHeight / 2 - 80, 80, WHITE);
     createText("1. Tutorial", screenWidth / 2 - MeasureText("1. Tutorial", 30) / 2, screenHeight / 2 + 40, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::tutorial);
     createText("2. Quit", screenWidth / 2 - MeasureText("2. Quit", 30) / 2, screenHeight / 2 + 80, 30, WHITE, mouseX, mouseY, &startBattle, &Battle::quitGame);
-
     EndDrawing();
 }
 
@@ -569,7 +605,7 @@ int main()
 
     while (!WindowShouldClose()) { //soalnya loop disini cok anj bajingan
         
-        mainMenu();
+        game();
 
     }
 }
