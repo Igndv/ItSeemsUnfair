@@ -842,7 +842,7 @@ int main()
     SetTargetFPS(30);
 
 
-    while (!WindowShouldClose()) { //soalnya loop disini cok anj bajingan
+    while (!WindowShouldClose()) {
 
         game();
 
